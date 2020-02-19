@@ -1,18 +1,26 @@
 package com.docproductions.hackernewsreader
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.docproductions.hackernewsreader.data.HNDataManager
 import com.docproductions.hackernewsreader.data.HNItemModel
-import java.util.*
+import com.docproductions.hackernewsreader.data.IHNDataFetchCallback
 
 class ItemListController(context: Context,
-                         private val items: List<HNItemModel>): BaseAdapter() {
+                         private var items: List<HNItemModel>): BaseAdapter(), IHNDataFetchCallback {
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    init {
+        HNDataManager().fetchStoriesAsync(0, 20, this)
+    }
 
     override fun getView(position: Int, convertView: View?, container: ViewGroup?): View {
         var itemView = convertView
@@ -40,5 +48,11 @@ class ItemListController(context: Context,
 
     override fun getCount(): Int {
         return items.count()
+    }
+
+    override fun fetchCompleted(success: Boolean, data: List<HNItemModel>) {
+        this.items = data
+
+        Handler(Looper.getMainLooper()).post { notifyDataSetChanged() }
     }
 }

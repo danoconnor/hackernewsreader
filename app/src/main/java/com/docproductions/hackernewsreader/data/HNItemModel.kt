@@ -1,6 +1,7 @@
 package com.docproductions.hackernewsreader.data
 
 import org.json.JSONObject
+import java.lang.Exception
 import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -19,10 +20,10 @@ class HNItemModel(json: String) : JSONObject(json) {
     val id = this.getLong("id")
     val type = ItemType.valueOf(this.optString("type", "unknown"))
     val author = this.optString("by")
-    val timePosted = Date(this.optLong("time", 0))
+    val timePosted = Date(this.optLong("time", 0) * 1000)
     val parent = this.optInt("parent")
     val kids: List<Int>
-    val url = URL(this.optString("url"))
+    var url: URL? = null
     val score = this.optInt("score")
     val title = this.optString("title")
     val commentCount = this.optInt("descendants")
@@ -33,6 +34,16 @@ class HNItemModel(json: String) : JSONObject(json) {
         if (kidsJsonArray != null) {
             for (i in 0 until kidsJsonArray.length()) {
                 kids.add(kidsJsonArray.getInt(i))
+            }
+        }
+
+        val urlString = this.optString("url")
+        if (urlString != null) {
+            try {
+                this.url = URL(urlString)
+            }
+            catch (e: Exception) {
+                print("URL parsing for item failed: " + e)
             }
         }
     }
