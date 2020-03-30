@@ -13,6 +13,7 @@ interface IHNDataFetchCallback {
 }
 
 class HNDataManager {
+
     private val hnBaseUrl = "https://hacker-news.firebaseio.com/v0"
 
     // A list of the IDs of the top stories
@@ -50,6 +51,10 @@ class HNDataManager {
 
             callback.fetchCompleted(true, stories)
         }
+    }
+
+    fun fetchCommentsAsync(storyItem: HNItemModel, callback: IHNDataFetchCallback) {
+
     }
 
     // Returns whether the fetch succeeded or not
