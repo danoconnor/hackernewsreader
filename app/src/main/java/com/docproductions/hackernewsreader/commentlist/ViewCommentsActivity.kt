@@ -1,29 +1,38 @@
-package com.docproductions.hackernewsreader
+package com.docproductions.hackernewsreader.commentlist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.docproductions.hackernewsreader.Constants
+import com.docproductions.hackernewsreader.R
+import com.docproductions.hackernewsreader.data.HNItemModel
 import com.docproductions.hackernewsreader.storylist.StoryListAdapter
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_view.*
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
 
-class MainActivity : AppCompatActivity() {
+class ViewCommentsActivity : AppCompatActivity() {
 
+    @OptIn(UnstableDefault::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val serializedStoryModel = intent.getStringExtra(Constants.ActivityParameters.StoryModelParameterName)
+        val story = Json.parse(HNItemModel.serializer(), serializedStoryModel)
+
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         listView.layoutManager = layoutManager
         listView.adapter =
-            StoryListAdapter(
+            ViewCommentsListAdapter(
                 this.applicationContext,
-                ArrayList()
+                story
             )
     }
 

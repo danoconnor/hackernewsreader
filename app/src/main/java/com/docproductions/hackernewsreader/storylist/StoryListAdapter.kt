@@ -1,21 +1,28 @@
-package com.docproductions.hackernewsreader
+package com.docproductions.hackernewsreader.storylist
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.docproductions.hackernewsreader.Constants
+import com.docproductions.hackernewsreader.MainActivity
+import com.docproductions.hackernewsreader.R
+import com.docproductions.hackernewsreader.commentlist.ViewCommentsActivity
 import com.docproductions.hackernewsreader.data.HNDataManager
 import com.docproductions.hackernewsreader.data.HNItemModel
+import com.docproductions.hackernewsreader.data.HNItemType
 import com.docproductions.hackernewsreader.data.IHNDataFetchCallback
+import com.docproductions.hackernewsreader.shared.StoryViewHolder
 import kotlinx.android.synthetic.main.story_item_view.view.*
-import java.net.URL
+import kotlinx.serialization.json.Json
 
 class StoryListAdapter(private val context: Context,
-                       private var stories: List<HNItemModel>): RecyclerView.Adapter<StoryListAdapter.StoryViewHolder>(), IHNDataFetchCallback {
+                       private var stories: List<HNItemModel>): RecyclerView.Adapter<StoryViewHolder>(), IHNDataFetchCallback {
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -25,7 +32,7 @@ class StoryListAdapter(private val context: Context,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.story_item_view, parent, false)
-        return StoryViewHolder(view)
+        return StoryViewHolder(context, view)
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
@@ -40,27 +47,6 @@ class StoryListAdapter(private val context: Context,
 
         Handler(Looper.getMainLooper()).post {
             notifyDataSetChanged()
-        }
-    }
-
-    inner class StoryViewHolder(storyView: View) : RecyclerView.ViewHolder(storyView) {
-
-        private var story: HNItemModel? = null
-
-        init {
-            itemView.setOnClickListener {
-                // TODO: Go to comments
-            }
-        }
-
-        fun setItem(item: HNItemModel) {
-            itemView.itemTitleTextView.text = item.title
-            itemView.itemScoreTextView.text = item.score.toString()
-            itemView.itemCommentsTextView.text = item.commentCount.toString()
-            itemView.authorAndTimeTextView.text = String.format("%s, %s", item.author, item.getTimeSincePosted())
-            itemView.linkTextView.text = item.url.toString()
-
-            story = item
         }
     }
 }

@@ -20,6 +20,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/story_list_view" />
+    <include layout="@layout/list_view" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

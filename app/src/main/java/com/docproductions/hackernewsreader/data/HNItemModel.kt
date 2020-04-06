@@ -1,12 +1,13 @@
 package com.docproductions.hackernewsreader.data
 
+import android.net.Uri
+import kotlinx.serialization.*
 import org.json.JSONObject
 import java.lang.Exception
-import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-enum class ItemType {
+enum class HNItemType {
     job,
     story,
     comment,
@@ -15,41 +16,29 @@ enum class ItemType {
     unknown
 }
 
-class HNItemModel(json: String) : JSONObject(json) {
+@Serializable
+data class HNItemModel(
+    val id: Long,
+    val type: HNItemType,
+    @SerialName("by")
+    val author: String? = null,
+    @SerialName("time")
+    val timeUnix: Long,
+    val parent: Long? = null,
+    @SerialName("kids")
+    val children: List<Long> = ArrayList<Long>(),
+    val url: String? = null,
+    val score: Int? = null,
+    val title: String? = null,
+    val text: String? = null,
+    @SerialName("descendants")
+    val commentCount: Int? = null) {
 
-    val id = this.getLong("id")
-    val type = ItemType.valueOf(this.optString("type", "unknown"))
-    val author = this.optString("by")
-    val timePosted = Date(this.optLong("time", 0) * 1000)
-    val parent = this.optInt("parent")
-    val kids: List<Int>
-    var url: URL? = null
-    val score = this.optInt("score")
-    val title = this.optString("title")
-    val commentCount = this.optInt("descendants")
-
-    init {
-        val kidsJsonArray = this.optJSONArray("kids")
-        kids = arrayListOf()
-        if (kidsJsonArray != null) {
-            for (i in 0 until kidsJsonArray.length()) {
-                kids.add(kidsJsonArray.getInt(i))
-            }
-        }
-
-        val urlString = this.optString("url")
-        if (urlString != null) {
-            try {
-                this.url = URL(urlString)
-            }
-            catch (e: Exception) {
-                print("URL parsing for item failed: " + e)
-            }
-        }
-    }
+    @Transient
+    val timePosted = Date(this.timeUnix * 1000)
 
     // A string describing how long it has been since this item was posted
-    // Ex. "3 hrs ago"
+    // Ex. "3 hours ago"
     fun getTimeSincePosted() : String {
         val timeDiffMs = Date().time - this.timePosted.time
 

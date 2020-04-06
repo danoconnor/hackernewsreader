@@ -1,8 +1,10 @@
 package com.docproductions.hackernewsreader.data
 
 import kotlinx.coroutines.*
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONArray
-import org.json.JSONObject
 import java.lang.Exception
 import java.net.URL
 import java.util.concurrent.CountDownLatch
@@ -12,12 +14,31 @@ interface IHNDataFetchCallback {
     fun fetchCompleted(success: Boolean, data: List<HNItemModel>)
 }
 
+@OptIn(UnstableDefault::class)
 class HNDataManager {
 
     private val hnBaseUrl = "https://hacker-news.firebaseio.com/v0"
+    private val json: Json
 
     // A list of the IDs of the top stories
     private var topStoryIds = ArrayList<Long>()
+
+    init {
+        val jsonConfiguration = JsonConfiguration(
+            encodeDefaults = true,
+            ignoreUnknownKeys = true,
+            isLenient = false,
+            serializeSpecialFloatingPointValues = false,
+            allowStructuredMapKeys = true,
+            prettyPrint = false,
+            unquotedPrint = false,
+            indent = "    ",
+            useArrayPolymorphism = false,
+            classDiscriminator = "type"
+        )
+
+        json = Json(jsonConfiguration)
+    }
 
     fun fetchStoriesAsync(startIndex: Int, count: Int, callback: IHNDataFetchCallback) {
         GlobalScope.launch {
@@ -27,34 +48,47 @@ class HNDataManager {
                 }
             }
 
-            val endIndex = Math.min(startIndex + count, topStoryIds.count())
+            val endIndex = (startIndex + count).coerceAtMost(topStoryIds.count())
             val validatedCount = endIndex - startIndex
             if (validatedCount <= 0) {
                 callback.fetchCompleted(true, ArrayList())
                 return@launch
             }
 
-            // Kick off all story detail tasks async in parallel
-            val deferredStories = ArrayList<Deferred<HNItemModel?>>()
+            var storiesToFetchList = ArrayList<Long>()
             for (i in 0 until validatedCount) {
-                deferredStories.add(async { fetchItemDetails(topStoryIds[i + startIndex]) })
+                storiesToFetchList.add(topStoryIds[i + startIndex])
             }
 
-            // Aggregate the results of all the async fetches
-            val stories = ArrayList<HNItemModel>()
-            for (i in 0 until deferredStories.count()) {
-                val story = deferredStories[i].await()
-                if (story != null) {
-                    stories.add(story)
-                }
+            fetchItemsConcurrently(storiesToFetchList) { stories ->
+                callback.fetchCompleted(true, stories)
             }
-
-            callback.fetchCompleted(true, stories)
         }
     }
 
-    fun fetchCommentsAsync(storyItem: HNItemModel, callback: IHNDataFetchCallback) {
+    fun fetchChildItemsAsync(item: HNItemModel, onComplete: (List<HNItemModel>) -> Unit) {
+        fetchItemsConcurrently(item.children, onComplete)
+    }
 
+    private fun fetchItemsConcurrently(itemIdList: List<Long>, onComplete: (List<HNItemModel>) -> Unit) {
+        GlobalScope.launch {
+            // Kick off all story detail tasks async in parallel
+            val deferredItems = ArrayList<Deferred<HNItemModel?>>()
+            for (i in 0 until itemIdList.count()) {
+                deferredItems.add(async { fetchItemDetails(itemIdList[i]) })
+            }
+
+            // Aggregate the results of all the async fetches
+            val items = ArrayList<HNItemModel>()
+            for (i in 0 until deferredItems.count()) {
+                val item = deferredItems[i].await()
+                if (item != null) {
+                    items.add(item)
+                }
+            }
+
+            onComplete(items)
+        }
     }
 
     // Returns whether the fetch succeeded or not
@@ -73,9 +107,9 @@ class HNDataManager {
 
     private fun fetchItemDetails(itemId: Long): HNItemModel? {
         val url = String.format("%s/item/%d.json", hnBaseUrl, itemId)
-        val json = fetchJson(URL(url)) ?: return null
+        val itemJson = fetchJson(URL(url)) ?: return null
 
-        return HNItemModel(json)
+        return json.parse(HNItemModel.serializer(), itemJson)
     }
 
     // Returns null if json fetch failed
