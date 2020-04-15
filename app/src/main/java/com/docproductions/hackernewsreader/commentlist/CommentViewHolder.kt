@@ -7,16 +7,24 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.marginLeft
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
 import kotlinx.android.synthetic.main.comment_item_view.view.*
 
 class CommentViewHolder(private val context: Context, commentView: View) : RecyclerView.ViewHolder(commentView) {
+
     fun setComment(comment: HNItemModel, depth: Int) {
         itemView.commentTextView.text = comment.text
-        itemView.authorAndTimeTextView.text = String.format("%s, %s, depth: %d", comment.author, comment.getTimeSincePosted(), depth)
+        itemView.authorAndTimeTextView.text = String.format("%s, %s", comment.author, comment.getTimeSincePosted())
 
-        val layoutParams = itemView.commentTextView.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.marginStart = layoutParams.marginStart * (depth + 1)
-        itemView.commentTextView.layoutParams = layoutParams
+        val commentDepthIndent = context.resources.getDimension(R.dimen.comment_margin).toInt()
+
+        val commentTextViewLayoutParams = itemView.commentTextView.layoutParams as ConstraintLayout.LayoutParams
+        commentTextViewLayoutParams.marginStart = commentDepthIndent * (depth + 1)
+        itemView.commentTextView.layoutParams = commentTextViewLayoutParams
+
+        val authorTextViewLayoutParams = itemView.authorAndTimeTextView.layoutParams as ConstraintLayout.LayoutParams
+        authorTextViewLayoutParams.marginStart = commentDepthIndent * (depth + 1)
+        itemView.authorAndTimeTextView.layoutParams = authorTextViewLayoutParams
     }
 }
