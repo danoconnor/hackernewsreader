@@ -31,7 +31,7 @@ class ViewCommentsActivity : AppCompatActivity() {
         listView.layoutManager = layoutManager
         listView.adapter =
             ViewCommentsListAdapter(
-                this.applicationContext,
+                this,
                 story
             )
     }

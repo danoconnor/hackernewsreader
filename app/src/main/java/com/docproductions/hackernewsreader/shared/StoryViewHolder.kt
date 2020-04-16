@@ -32,7 +32,6 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
             story?.url?.let {
                 val webpage = Uri.parse(it)
                 val intent = Intent(Intent.ACTION_VIEW, webpage)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 if (intent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(intent)
                 }

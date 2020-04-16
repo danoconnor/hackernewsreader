@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         listView.layoutManager = layoutManager
         listView.adapter =
             StoryListAdapter(
-                this.applicationContext,
+                this,
                 ArrayList()
             )
     }
