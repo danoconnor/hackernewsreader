@@ -7,19 +7,45 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/optionsButtonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/collapsedCommentTextView"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/collapseCommentButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="#0003A9F4"
+            android:text="Hide"
+            android:textColor="@color/colorPrimaryTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
-        android:id="@+id/authorAndTimeTextView"
+        android:id="@+id/authorTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="danocon, 12 hours ago"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/MediumText"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/optionsButtonContainer" />
 
     <TextView
         android:id="@+id/commentTextView"
@@ -31,9 +57,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:text="Wow this person said something so interesting and funny and relevant here."
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/MediumText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/authorAndTimeTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/authorTextView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

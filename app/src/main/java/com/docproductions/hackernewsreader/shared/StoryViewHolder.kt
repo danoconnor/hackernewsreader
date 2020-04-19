@@ -43,7 +43,7 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
         itemView.itemTitleTextView.text = item.title
         itemView.itemScoreTextView.text = item.score.toString()
         itemView.itemCommentsTextView.text = item.commentCount.toString()
-        itemView.authorAndTimeTextView.text = String.format("%s, %s", item.author, item.getTimeSincePosted())
+        itemView.collapsedCommentTextView.text = String.format("%s, %s", item.author, item.getTimeSincePosted())
         itemView.linkTextView.text = item.url.toString()
 
         story = item

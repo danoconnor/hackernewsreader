@@ -13,13 +13,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+         <TextView
             android:id="@+id/itemScoreTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="33.2k"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textAppearance="@style/SmallText"
             app:layout_constraintEnd_toEndOf="@+id/itemCommentsTextView"
             app:layout_constraintTop_toBottomOf="@+id/itemCommentsTextView" />
 
@@ -30,7 +30,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:text="228"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textAppearance="@style/SmallText"
             app:layout_constraintEnd_toStartOf="@+id/commentsIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,18 +65,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="This is the title of the post and it could be really long so I'm going to add a lot of words here"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textAppearance="@style/LargeText"
         app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/authorAndTimeTextView"
+        android:id="@+id/collapsedCommentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="danocon, 16 hrs"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/SmallText"
         app:layout_constraintStart_toStartOf="@+id/itemTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/itemTitleTextView" />
 
@@ -86,10 +86,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="https://github.com/somethingcool"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/SmallText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="@+id/itemTitleTextView"
-        app:layout_constraintTop_toBottomOf="@+id/authorAndTimeTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/collapsedCommentTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

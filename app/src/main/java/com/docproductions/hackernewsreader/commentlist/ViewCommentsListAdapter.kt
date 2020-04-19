@@ -13,31 +13,43 @@ import com.docproductions.hackernewsreader.shared.StoryViewHolder
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import org.w3c.dom.Comment
+
+interface CommentActionDelegate {
+    fun collapseComment(commentId: Long)
+    fun expandComment(commentId: Long)
+}
 
 class ViewCommentsListAdapter(private val context: Context,
-                       private val story: HNItemModel): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                       private val story: HNItemModel): RecyclerView.Adapter<RecyclerView.ViewHolder>(), CommentActionDelegate {
 
-   inner class CommentItem(val item: HNItemModel, val depth: Int) { }
+   inner class CommentItem(val item: HNItemModel, val depth: Int, var isHidden: Boolean = false, var isCollapsed: Boolean = false) { }
 
     private val storyViewType = 0
     private val commentViewType = 1
+    private val collapsedCommentViewType = 2
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
     private var comments: MutableList<CommentItem> = ArrayList()
+    private val visibleComments get() = comments.filter { !it.isHidden }
 
     private val commentChangeMutex = Mutex()
 
     init {
-        fetchAllChildComments(story, 0, 2)
+        fetchAllChildComments(story, 0, 3)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == storyViewType) {
             val view = LayoutInflater.from(context).inflate(R.layout.story_item_view, parent, false)
             StoryViewHolder(context, view)
-        } else {
+        } else if (viewType == commentViewType) {
             val view = LayoutInflater.from(context).inflate(R.layout.comment_item_view, parent, false)
             CommentViewHolder(context, view)
+        } else {
+            val view = LayoutInflater.from(context).inflate(R.layout.collapsed_comment_item_view, parent, false)
+            CollapsedCommentViewHolder(context, view)
         }
     }
 
@@ -46,20 +58,34 @@ class ViewCommentsListAdapter(private val context: Context,
             (holder as? StoryViewHolder)?.setItem(story)
         } else {
             // Subtract one since the story itself takes up the first position in the RecyclerView
-            val comment = comments[position - 1]
-            (holder as? CommentViewHolder)?.setComment(comment.item, comment.depth)
+            val comment = visibleComments[position - 1]
+            if (comment.isCollapsed) {
+                (holder as? CollapsedCommentViewHolder)?.setComment(comment.item, comment.depth, getChildComments(comments, comment.item.id).count(), this)
+            } else {
+                (holder as? CommentViewHolder)?.setComment(comment.item, comment.depth, this)
+            }
         }
     }
 
     // Need to include the story item itself in the count
-    override fun getItemCount(): Int = comments.size + 1
+    override fun getItemCount(): Int = visibleComments.size + 1
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) {
             storyViewType
+        } else if (visibleComments[position - 1].isCollapsed) {
+            collapsedCommentViewType
         } else {
             commentViewType
         }
+    }
+
+    override fun collapseComment(commentId: Long) {
+        modifyChildComments(visibleComments, commentId, true)
+    }
+
+    override fun expandComment(commentId: Long) {
+        modifyChildComments(comments, commentId, false)
     }
 
     private fun fetchAllChildComments(item: HNItemModel, currentDepth: Int, maxDepth: Int) {
@@ -87,6 +113,49 @@ class ViewCommentsListAdapter(private val context: Context,
                     fetchAllChildComments(child, currentDepth + 1, maxDepth)
                 }
             }
+        }
+    }
+
+    private fun getChildComments(commentList: List<CommentItem>, parentId: Long): List<CommentItem> {
+        var foundParentComment = false
+        var parentCommentDepth = -1
+        var childComments = ArrayList<CommentItem>()
+        for (comment in commentList) {
+            if (comment.item.id == parentId) {
+                foundParentComment = true
+                parentCommentDepth = comment.depth
+            } else if (foundParentComment) {
+                if (comment.depth <= parentCommentDepth) {
+                    break
+                } else {
+                    childComments.add(comment)
+                }
+            }
+        }
+
+        return childComments
+    }
+
+    private fun modifyChildComments(commentList: List<CommentItem>, targetCommentId: Long, shouldCollapse: Boolean) {
+        var isChildComment = false
+        var targetCommentDepth = -1
+        for (comment in commentList) {
+            if (comment.item.id == targetCommentId) {
+                isChildComment = true
+                targetCommentDepth = comment.depth
+                comment.isCollapsed = shouldCollapse
+            } else if (isChildComment) {
+                // Mark child items of the target comment as hidden, until we find the next comment that is a peer to the target
+                if (comment.depth > targetCommentDepth) {
+                    comment.isHidden = shouldCollapse
+                } else {
+                    isChildComment = false
+                }
+            }
+        }
+
+        Handler(Looper.getMainLooper()).post {
+            notifyDataSetChanged()
         }
     }
 }
