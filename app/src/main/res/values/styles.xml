@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppThemeDark" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="android:textColorPrimary">#ffffffff</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryTextColor</item>
     </style>
 
     <style name="AppThemeDark.NoActionBar">
@@ -15,18 +15,18 @@
     <style name="AppThemeDark.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="LargeText" parent="TextAppearance.AppCompat.Large">
-        <item name="android:textColorPrimary">#ffffffff</item>
-        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryTextColor</item>
+        <item name="android:textColor">@color/colorPrimaryTextColor</item>
     </style>
 
     <style name="MediumText" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColorPrimary">#ffffffff</item>
-        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryTextColor</item>
+        <item name="android:textColor">@color/colorPrimaryTextColor</item>
     </style>
 
     <style name="SmallText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColorPrimary">#ffffffff</item>
-        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryTextColor</item>
+        <item name="android:textColor">@color/colorPrimaryTextColor</item>
     </style>
 
 </resources>

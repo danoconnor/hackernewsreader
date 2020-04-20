@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.docproductions.hackernewsreader.Constants
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
-import com.docproductions.hackernewsreader.storylist.StoryListAdapter
-
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_view.*
 import kotlinx.serialization.UnstableDefault
@@ -20,7 +18,7 @@ class ViewCommentsActivity : AppCompatActivity() {
     @OptIn(UnstableDefault::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_view_comments)
         setSupportActionBar(toolbar)
 
         val serializedStoryModel = intent.getStringExtra(Constants.ActivityParameters.StoryModelParameterName)

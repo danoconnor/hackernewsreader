@@ -45,6 +45,10 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
         val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
         authorTextViewLayoutParams.marginStart = commentDepthIndent * (depth + 1)
         itemView.authorTextView.layoutParams = authorTextViewLayoutParams
+
+        val optionsButtonLayoutParams = itemView.optionsButtonContainer.layoutParams as ConstraintLayout.LayoutParams
+        optionsButtonLayoutParams.marginStart = commentDepthIndent * (depth + 1)
+        itemView.optionsButtonContainer.layoutParams = optionsButtonLayoutParams
     }
 
     private fun setOnClickHandlers() {
