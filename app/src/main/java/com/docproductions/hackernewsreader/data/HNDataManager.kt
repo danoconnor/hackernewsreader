@@ -10,10 +10,6 @@ import java.net.URL
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
-interface IHNDataFetchCallback {
-    fun fetchCompleted(success: Boolean, data: List<HNItemModel>)
-}
-
 @OptIn(UnstableDefault::class)
 class HNDataManager {
 
@@ -40,18 +36,18 @@ class HNDataManager {
         json = Json(jsonConfiguration)
     }
 
-    fun fetchStoriesAsync(startIndex: Int, count: Int, callback: IHNDataFetchCallback) {
+    fun fetchStoriesAsync(startIndex: Int, count: Int, onComplete: (Boolean, List<HNItemModel>?) -> Unit) {
         GlobalScope.launch {
             if (topStoryIds.count() == 0) {
                 if (!fetchTopStoryIds()) {
-                    callback.fetchCompleted(false, ArrayList())
+                    onComplete(false, null)
                 }
             }
 
             val endIndex = (startIndex + count).coerceAtMost(topStoryIds.count())
             val validatedCount = endIndex - startIndex
             if (validatedCount <= 0) {
-                callback.fetchCompleted(true, ArrayList())
+                onComplete(true, ArrayList())
                 return@launch
             }
 
@@ -61,7 +57,7 @@ class HNDataManager {
             }
 
             fetchItemsConcurrently(storiesToFetchList) { stories ->
-                callback.fetchCompleted(true, stories)
+                onComplete(true, stories)
             }
         }
     }

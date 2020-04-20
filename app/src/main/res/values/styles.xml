@@ -3,7 +3,6 @@
     <!-- Base application theme. -->
     <style name="AppThemeDark" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="android:textColorPrimary">#ffffffff</item>
-        <item name="android:background">#ff000000</item>
     </style>
 
     <style name="AppThemeDark.NoActionBar">

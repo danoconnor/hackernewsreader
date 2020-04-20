@@ -21,10 +21,7 @@ class MainActivity : AppCompatActivity() {
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         listView.layoutManager = layoutManager
         listView.adapter =
-            StoryListAdapter(
-                this,
-                ArrayList()
-            )
+            StoryListAdapter(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
