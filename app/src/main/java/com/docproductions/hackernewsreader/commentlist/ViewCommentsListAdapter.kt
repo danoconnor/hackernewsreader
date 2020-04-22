@@ -1,5 +1,6 @@
 package com.docproductions.hackernewsreader.commentlist
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -94,24 +95,19 @@ class ViewCommentsListAdapter(private val context: Context,
         }
 
         HNDataManager().fetchChildItemsAsync(item) {
-            GlobalScope.launch {
-                commentChangeMutex.lock()
 
-                // Add the children immediately after their parent
-                val commentItems = it.map { CommentItem(it, currentDepth) }
+            // Add the children immediately after their parent
+            val commentItems = it.map { CommentItem(it, currentDepth) }
+            (context as? Activity)?.runOnUiThread {
+                // We update the comments list on the UI thread since all other interactions with the
+                // comments list run on the UI thread. This avoids concurrent modifications
                 val parentIndex = comments.indexOfFirst { it.item.id == item.id }
                 comments.addAll(parentIndex + 1, commentItems)
+                notifyDataSetChanged()
+            }
 
-                // Update UI, then start fetching the children of the children
-                Handler(Looper.getMainLooper()).post {
-                    notifyDataSetChanged()
-                }
-
-                commentChangeMutex.unlock()
-
-                for (child in it) {
-                    fetchAllChildComments(child, currentDepth + 1, maxDepth)
-                }
+            for (child in it) {
+                fetchAllChildComments(child, currentDepth + 1, maxDepth)
             }
         }
     }
