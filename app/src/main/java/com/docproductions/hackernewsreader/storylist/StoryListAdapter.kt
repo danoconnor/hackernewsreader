@@ -81,7 +81,7 @@ class StoryListAdapter
         }
 
         if (data != null && data.isNotEmpty()) {
-            this.stories.addAll(data)
+            this.stories.addAll(data.filter { !it.deleted })
 
             Handler(Looper.getMainLooper()).post {
                 notifyDataSetChanged()

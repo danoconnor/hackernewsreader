@@ -32,7 +32,8 @@ data class HNItemModel(
     val title: String? = null,
     val text: String? = null,
     @SerialName("descendants")
-    val commentCount: Int? = null) {
+    val commentCount: Int? = null,
+    val deleted: Boolean = false) {
 
     @Transient
     val timePosted = Date(this.timeUnix * 1000)

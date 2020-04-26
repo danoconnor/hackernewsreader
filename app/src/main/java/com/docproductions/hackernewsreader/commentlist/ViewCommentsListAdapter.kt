@@ -33,7 +33,7 @@ class ViewCommentsListAdapter(private val context: Context,
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     private var comments: MutableList<CommentItem> = ArrayList()
-    private val visibleComments get() = comments.filter { !it.isHidden }
+    private val visibleComments get() = comments.filter { !it.isHidden && !it.item.deleted }
 
     private val commentChangeMutex = Mutex()
 
