@@ -36,6 +36,10 @@ class HNDataManager {
         json = Json(jsonConfiguration)
     }
 
+    fun clearCachedStories() {
+        topStoryIds.clear()
+    }
+
     fun fetchStoriesAsync(startIndex: Int, count: Int, onComplete: (Boolean, List<HNItemModel>?) -> Unit) {
         GlobalScope.launch {
             if (topStoryIds.count() == 0) {

@@ -74,6 +74,16 @@ class StoryListAdapter
         }
     }
 
+    fun refreshList() {
+        stories.clear()
+        currentLoadedPageIndex = 0
+        ObjectGraph.hnDataManager.clearCachedStories()
+
+        ObjectGraph.hnDataManager.fetchStoriesAsync(currentLoadedPageIndex, storiesPerPage) { success: Boolean, newStories: List<HNItemModel>? ->
+            this.fetchCompleted(success, newStories)
+        }
+    }
+
     private fun fetchCompleted(success: Boolean, data: List<HNItemModel>?) {
         if (!success) {
             Log.println(Log.ERROR, "StoryListAdapter", "Fetch did not succeed")
