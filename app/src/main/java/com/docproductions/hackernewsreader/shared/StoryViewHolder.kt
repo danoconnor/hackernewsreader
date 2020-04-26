@@ -3,6 +3,8 @@ package com.docproductions.hackernewsreader.shared
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.text.Html
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.docproductions.hackernewsreader.Constants
@@ -39,12 +41,24 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
         }
     }
 
-    fun setItem(item: HNItemModel) {
+    fun setItem(item: HNItemModel, showRelevantStoryText: Boolean) {
         itemView.itemTitleTextView.text = item.title
         itemView.itemScoreTextView.text = item.score.toString()
         itemView.itemCommentsTextView.text = item.commentCount.toString()
         itemView.collapsedCommentTextView.text = String.format("%s, %s", item.author, item.getTimeSincePosted())
-        itemView.linkTextView.text = item.url.toString()
+        itemView.linkTextView.text = item.url?.toString() ?: ""
+
+        // Some stories are text based, not URL based. If we are in the comment view, show the text. We should not show the text in the stories list.
+        if (item.url == null && !item.text.isNullOrEmpty() && showRelevantStoryText) {
+            val storyText = item.text
+            val storyTextParsed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(storyText, Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                Html.fromHtml(storyText)
+            }
+
+            itemView.linkTextView.text = storyTextParsed.trim()
+        }
 
         story = item
     }

@@ -56,7 +56,7 @@ class ViewCommentsListAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position == 0) {
-            (holder as? StoryViewHolder)?.setItem(story)
+            (holder as? StoryViewHolder)?.setItem(story, true)
         } else {
             // Subtract one since the story itself takes up the first position in the RecyclerView
             val comment = visibleComments[position - 1]

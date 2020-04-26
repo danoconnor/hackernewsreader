@@ -57,7 +57,7 @@ class StoryListAdapter
         if (holder.itemViewType == storyItemType) {
             val storyViewHolder = holder as StoryViewHolder
             val story = stories[position]
-            storyViewHolder.setItem(story)
+            storyViewHolder.setItem(story, false)
         } else {
             val loadMoreItemHolder = holder as LoadMoreItemHolder
             loadMoreItemHolder.bind(this)
