@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppThemeDark" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="android:textColorPrimary">@color/colorPrimaryTextColor</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">never</item>
     </style>
 
     <style name="AppThemeDark.NoActionBar">
