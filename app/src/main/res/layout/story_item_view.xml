@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -13,14 +13,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-         <TextView
+        <TextView
             android:id="@+id/itemScoreTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="33.2k"
             android:textAppearance="@style/SmallText"
-             android:textColor="@color/colorSecondaryTextColor"
+            android:textColor="@color/colorSecondaryTextColor"
             app:layout_constraintEnd_toEndOf="@+id/itemCommentsTextView"
             app:layout_constraintTop_toBottomOf="@+id/itemCommentsTextView" />
 

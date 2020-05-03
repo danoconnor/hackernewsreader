@@ -1,10 +1,12 @@
 package com.docproductions.hackernewsreader.commentlist
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.text.Html
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.toColor
 import androidx.recyclerview.widget.RecyclerView
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
@@ -21,6 +23,7 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
         this.commentActionDelegate = WeakReference(commentActionDelegate)
         setContent(comment, depth)
         setOnClickHandlers()
+        hideOptionsButtons()
     }
 
     private fun setContent(comment: HNItemModel, depth: Int) {
@@ -53,20 +56,35 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
 
     private fun setOnClickHandlers() {
         itemView.setOnClickListener {
-            val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
-            authorTextViewLayoutParams.topMargin = 0
-            itemView.authorTextView.layoutParams = authorTextViewLayoutParams
-
-            itemView.optionsButtonContainer.visibility = View.VISIBLE
+            showOptionsButtons()
         }
 
         itemView.collapseCommentButton.setOnClickListener {
-            val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
-            authorTextViewLayoutParams.topMargin = context.resources.getDimension(R.dimen.comment_margin).toInt()
-            itemView.authorTextView.layoutParams = authorTextViewLayoutParams
-
-            itemView.optionsButtonContainer.visibility = View.GONE
+            hideOptionsButtons()
             commentActionDelegate?.get()?.collapseComment(comment?.id ?: -1)
         }
+
+        itemView.doneButton.setOnClickListener {
+            hideOptionsButtons()
+        }
+    }
+
+    private fun showOptionsButtons() {
+        val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
+        authorTextViewLayoutParams.topMargin = 0
+        itemView.authorTextView.layoutParams = authorTextViewLayoutParams
+
+        itemView.optionsButtonContainer.visibility = View.VISIBLE
+
+        itemView.commentItemLayout.setBackgroundColor(context.resources.getColor(R.color.colorSelectedHighlight))
+    }
+
+    private fun hideOptionsButtons() {
+        val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
+        authorTextViewLayoutParams.topMargin = context.resources.getDimension(R.dimen.comment_margin).toInt()
+        itemView.authorTextView.layoutParams = authorTextViewLayoutParams
+
+        itemView.optionsButtonContainer.visibility = View.GONE
+        itemView.commentItemLayout.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
     }
 }
