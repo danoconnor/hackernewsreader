@@ -17,31 +17,7 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
 
     private var story: HNItemModel? = null
 
-    init {
-        itemView.setOnClickListener {
-            if (story == null) {
-                return@setOnClickListener
-            }
-
-            val intent = Intent(context, ViewCommentsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            val serializedStory = Json.stringify(HNItemModel.serializer(), story!!)
-            intent.putExtra(Constants.ActivityParameters.StoryModelParameterName, serializedStory)
-            context.startActivity(intent)
-        }
-
-        itemView.linkTextView.setOnClickListener {
-            story?.url?.let {
-                val webpage = Uri.parse(it)
-                val intent = Intent(Intent.ACTION_VIEW, webpage)
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(intent)
-                }
-            }
-        }
-    }
-
-    fun setItem(item: HNItemModel, showRelevantStoryText: Boolean) {
+    fun setItem(item: HNItemModel, isStoryDetailsMode: Boolean) {
         itemView.itemTitleTextView.text = item.title
         itemView.itemScoreTextView.text = item.score.toString()
         itemView.itemCommentsTextView.text = item.commentCount.toString()
@@ -49,7 +25,7 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
         itemView.linkTextView.text = item.url?.toString() ?: ""
 
         // Some stories are text based, not URL based. If we are in the comment view, show the text. We should not show the text in the stories list.
-        if (item.url == null && !item.text.isNullOrEmpty() && showRelevantStoryText) {
+        if (item.url == null && !item.text.isNullOrEmpty() && isStoryDetailsMode) {
             val storyText = item.text
             val storyTextParsed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(storyText, Html.FROM_HTML_MODE_LEGACY)
@@ -61,5 +37,36 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
         }
 
         story = item
+        setOnClickListeners(isStoryDetailsMode)
+    }
+
+    private fun setOnClickListeners(isStoryDetailsMode: Boolean) {
+        itemView.linkTextView.setOnClickListener {
+            story?.url?.let {
+                val webpage = Uri.parse(it)
+                val intent = Intent(Intent.ACTION_VIEW, webpage)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                }
+            }
+        }
+
+        // If we're on the stories list, then add a click listener to take the user to the story details
+        if (!isStoryDetailsMode) {
+            itemView.setOnClickListener {
+                if (story == null) {
+                    return@setOnClickListener
+                }
+
+                val intent = Intent(context, ViewCommentsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                val serializedStory = Json.stringify(HNItemModel.serializer(), story!!)
+                intent.putExtra(
+                    Constants.ActivityParameters.StoryModelParameterName,
+                    serializedStory
+                )
+                context.startActivity(intent)
+            }
+        }
     }
 }
