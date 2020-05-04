@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.docproductions.hackernewsreader.Constants
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_story_list.*
 import kotlinx.android.synthetic.main.list_view.*
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json

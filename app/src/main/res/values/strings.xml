@@ -4,5 +4,6 @@
     <string name="load_more">Load more</string>
     <string name="hide_comment">Hide</string>
     <string name="done">Done</string>
+    <string name="story_fetch_error">Failed to fetch data, please try again.</string>
     <string name="action_refresh">Refresh</string>
 </resources>

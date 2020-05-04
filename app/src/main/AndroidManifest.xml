@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeDark">
         <activity
-            android:name=".MainActivity"
+            android:name=".storylist.StoryListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeDark.NoActionBar">
             <intent-filter>

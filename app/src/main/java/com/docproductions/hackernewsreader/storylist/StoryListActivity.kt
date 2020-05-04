@@ -1,21 +1,35 @@
-package com.docproductions.hackernewsreader
+package com.docproductions.hackernewsreader.storylist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.docproductions.hackernewsreader.storylist.StoryListAdapter
+import com.docproductions.hackernewsreader.ObjectGraph
+import com.docproductions.hackernewsreader.R
+import com.docproductions.hackernewsreader.data.HNItemModel
 
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_story_list.*
 import kotlinx.android.synthetic.main.list_view.*
 
-class MainActivity : AppCompatActivity() {
+class StoryListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_story_list)
         setSupportActionBar(toolbar)
+
+        ObjectGraph.hnDataManager.fetchStoriesAsync(0, 50) { success: Boolean, stories: List<HNItemModel>? ->
+            this.runOnUiThread {
+                if (!success) {
+                    Toast.makeText(
+                        this,
+                        this.getString(R.string.story_fetch_error),
+                        Toast.LENGTH_LONG).show()
+                }
+            }
+        }
 
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
