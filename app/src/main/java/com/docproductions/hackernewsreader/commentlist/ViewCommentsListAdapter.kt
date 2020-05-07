@@ -11,10 +11,7 @@ import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNDataManager
 import com.docproductions.hackernewsreader.data.HNItemModel
 import com.docproductions.hackernewsreader.shared.StoryViewHolder
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import org.w3c.dom.Comment
 
 interface CommentActionDelegate {
     fun collapseComment(commentId: Long)

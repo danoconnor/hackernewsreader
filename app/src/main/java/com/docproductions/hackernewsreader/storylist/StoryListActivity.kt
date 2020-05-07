@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.docproductions.hackernewsreader.ObjectGraph
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 import kotlinx.android.synthetic.main.activity_story_list.*
 import kotlinx.android.synthetic.main.list_view.*
@@ -19,6 +20,8 @@ class StoryListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_story_list)
         setSupportActionBar(toolbar)
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
 
         ObjectGraph.hnDataManager.fetchStoriesAsync(0, 50) { success: Boolean, stories: List<HNItemModel>? ->
             this.runOnUiThread {

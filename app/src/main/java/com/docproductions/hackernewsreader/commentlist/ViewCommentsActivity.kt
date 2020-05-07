@@ -21,6 +21,8 @@ class ViewCommentsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_view_comments)
         setSupportActionBar(toolbar)
 
+        throw RuntimeException("TEST CRASH")
+
         val serializedStoryModel = intent.getStringExtra(Constants.ActivityParameters.StoryModelParameterName)
         val story = Json.parse(HNItemModel.serializer(), serializedStoryModel)
 

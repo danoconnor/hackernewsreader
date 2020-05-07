@@ -1,5 +1,6 @@
 package com.docproductions.hackernewsreader.data
 
+import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -7,8 +8,6 @@ import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONArray
 import java.lang.Exception
 import java.net.URL
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
 
 @OptIn(UnstableDefault::class)
 class HNDataManager {
@@ -109,7 +108,12 @@ class HNDataManager {
         val url = String.format("%s/item/%d.json", hnBaseUrl, itemId)
         val itemJson = fetchJson(URL(url)) ?: return null
 
-        return json.parse(HNItemModel.serializer(), itemJson)
+        return try {
+            json.parse(HNItemModel.serializer(), itemJson)
+        } catch (e: Exception) {
+            Log.e("HNDataManager", "JSON parser for item id: $itemId", e)
+            null
+        }
     }
 
     // Returns null if json fetch failed
