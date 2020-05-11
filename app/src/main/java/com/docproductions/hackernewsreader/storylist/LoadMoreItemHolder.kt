@@ -16,10 +16,18 @@ class LoadMoreItemHolder(private val context: Context, loadMoreView: View) : Rec
     fun bind(loadMoreActionDelegate: LoadMoreActionDelegate) {
         this.loadMoreActionDelegate = WeakReference(loadMoreActionDelegate)
         setOnClickHandlers()
+
+        itemView.loadMoreButton.isEnabled = true
+        itemView.loadMoreButton.setTextColor(context.resources.getColor(R.color.colorButtonPrimaryTextColor))
+        itemView.loadMoreButtonProgressBar.visibility = View.GONE
     }
 
     private fun setOnClickHandlers() {
         itemView.loadMoreButton.setOnClickListener {
+            itemView.loadMoreButton.isEnabled = false
+            itemView.loadMoreButton.setTextColor(context.resources.getColor(R.color.colorButtonDisabledTextColor))
+            itemView.loadMoreButtonProgressBar.visibility = View.VISIBLE
+
             loadMoreActionDelegate?.get()?.loadMore()
         }
     }
