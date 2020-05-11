@@ -5,12 +5,15 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNDataManager
 import com.docproductions.hackernewsreader.data.HNItemModel
 import com.docproductions.hackernewsreader.shared.StoryViewHolder
+import kotlinx.android.synthetic.main.activity_story_list.*
+import kotlinx.android.synthetic.main.activity_view_comments.*
 import kotlinx.coroutines.sync.Mutex
 
 interface CommentActionDelegate {
@@ -18,7 +21,7 @@ interface CommentActionDelegate {
     fun expandComment(commentId: Long)
 }
 
-class ViewCommentsListAdapter(private val context: Context,
+class ViewCommentsListAdapter(private val context: Activity,
                        private val story: HNItemModel): RecyclerView.Adapter<RecyclerView.ViewHolder>(), CommentActionDelegate {
 
    inner class CommentItem(val item: HNItemModel, val depth: Int, var isHidden: Boolean = false, var isCollapsed: Boolean = false) { }
@@ -35,6 +38,7 @@ class ViewCommentsListAdapter(private val context: Context,
     private val commentChangeMutex = Mutex()
 
     init {
+        context.commentsLoadingProgressBar.visibility = View.VISIBLE
         fetchAllChildComments(story, 0, 3)
     }
 
@@ -101,6 +105,8 @@ class ViewCommentsListAdapter(private val context: Context,
                 val parentIndex = comments.indexOfFirst { it.item.id == item.id }
                 comments.addAll(parentIndex + 1, commentItems)
                 notifyDataSetChanged()
+
+                context.commentsLoadingProgressBar.visibility = View.GONE
             }
 
             for (child in it) {
