@@ -7,15 +7,6 @@ import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-enum class HNItemType {
-    job,
-    story,
-    comment,
-    poll,
-    pollopt,
-    unknown
-}
-
 @Serializable
 data class HNItemModel(
     val id: Long,

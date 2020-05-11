@@ -14,6 +14,7 @@ import com.docproductions.hackernewsreader.ObjectGraph
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
 import com.docproductions.hackernewsreader.data.HNItemType
+import com.docproductions.hackernewsreader.data.HNStorySortType
 import com.docproductions.hackernewsreader.shared.StoryViewHolder
 import kotlinx.android.synthetic.main.activity_story_list.*
 
@@ -34,6 +35,8 @@ class StoryListAdapter
     private var stories = ArrayList<HNItemModel>()
 
     private var refreshInProgress = false
+
+    var sortType = HNStorySortType.Top
 
     init {
         refreshList()
@@ -81,7 +84,7 @@ class StoryListAdapter
 
     override fun loadMore() {
         currentLoadedPageIndex += storiesPerPage
-        ObjectGraph.hnDataManager.fetchStoriesAsync(currentLoadedPageIndex, storiesPerPage) { success: Boolean, newStories: List<HNItemModel>? ->
+        ObjectGraph.hnDataManager.fetchStoriesAsync(sortType, currentLoadedPageIndex, storiesPerPage) { success: Boolean, newStories: List<HNItemModel>? ->
             this.fetchCompleted(success, newStories)
         }
     }
@@ -100,9 +103,9 @@ class StoryListAdapter
 
             stories.clear()
             currentLoadedPageIndex = 0
-            ObjectGraph.hnDataManager.clearCachedStories()
+            ObjectGraph.hnDataManager.clearCachedStories(sortType)
 
-            ObjectGraph.hnDataManager.fetchStoriesAsync(currentLoadedPageIndex, storiesPerPage) { success: Boolean, newStories: List<HNItemModel>? ->
+            ObjectGraph.hnDataManager.fetchStoriesAsync(sortType, currentLoadedPageIndex, storiesPerPage) { success: Boolean, newStories: List<HNItemModel>? ->
                 this.refreshInProgress = false
                 this.fetchCompleted(success, newStories)
 
@@ -111,8 +114,13 @@ class StoryListAdapter
                 }
             }
         }
+    }
 
+    fun changeSortType(newSortType: HNStorySortType) {
+        if (newSortType == sortType) { return }
 
+        sortType = newSortType
+        refreshList()
     }
 
     private fun fetchCompleted(success: Boolean, data: List<HNItemModel>?) {

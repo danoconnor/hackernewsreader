@@ -6,4 +6,16 @@
     <string name="done">Done</string>
     <string name="story_fetch_error">Failed to fetch data, please try again.</string>
     <string name="action_refresh">Refresh</string>
+    <string name="action_top_stories">Top</string>
+    <string name="action_best_stories">Best</string>
+    <string name="action_new_stories">New</string>
+    <string name="action_ask_stories">Ask HN</string>
+    <string name="action_show_stories">Show HN</string>
+    <string name="action_jobs_stories">Jobs</string>
+    <string name="top_stories_label">Top stories</string>
+    <string name="best_stories_label">Best stories</string>
+    <string name="new_stories_label">New stories</string>
+    <string name="ask_stories_label">Ask HN</string>
+    <string name="show_stories_label">Show HN</string>
+    <string name="jobs_stories_label">Jobs</string>
 </resources>

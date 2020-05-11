@@ -8,6 +8,8 @@ import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONArray
 import java.lang.Exception
 import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
 
 @OptIn(UnstableDefault::class)
 class HNDataManager {
@@ -15,8 +17,8 @@ class HNDataManager {
     private val hnBaseUrl = "https://hacker-news.firebaseio.com/v0"
     private val json: Json
 
-    // A list of the IDs of the top stories
-    private var topStoryIds = ArrayList<Long>()
+    // A cached list of the story IDs for each sort type (top, new, etc.)
+    private var storyListIds = HashMap<HNStorySortType, ArrayList<Long>>()
 
     init {
         val jsonConfiguration = JsonConfiguration(
@@ -35,28 +37,38 @@ class HNDataManager {
         json = Json(jsonConfiguration)
     }
 
-    fun clearCachedStories() {
-        topStoryIds.clear()
+    fun clearCachedStories(sortType: HNStorySortType) {
+        storyListIds[sortType]?.clear()
     }
 
-    fun fetchStoriesAsync(startIndex: Int, count: Int, onComplete: (Boolean, List<HNItemModel>?) -> Unit) {
+    fun fetchStoriesAsync(sortType: HNStorySortType, startIndex: Int, count: Int, onComplete: (Boolean, List<HNItemModel>?) -> Unit) {
         GlobalScope.launch {
-            if (topStoryIds.count() == 0) {
-                if (!fetchTopStoryIds()) {
+            // Fetch the list of stories for the desired sort type if we don't have the data cached already
+            if (!storyListIds.containsKey(sortType) || storyListIds[sortType]?.count() == 0) {
+                if (!fetchStoryIds(sortType)) {
                     onComplete(false, null)
+                    return@launch
                 }
             }
 
-            val endIndex = (startIndex + count).coerceAtMost(topStoryIds.count())
+            // Should never happen, but just do some sanity checking to make sure we have populated the story list
+            if (!storyListIds.containsKey(sortType)) {
+                Log.e("HNDataManager", "Empty story list for sort type $sortType")
+                onComplete(false, null)
+                return@launch
+            }
+
+            val storyIds = storyListIds[sortType]!!
+            val endIndex = (startIndex + count).coerceAtMost(storyIds.count())
             val validatedCount = endIndex - startIndex
             if (validatedCount <= 0) {
                 onComplete(true, ArrayList())
                 return@launch
             }
 
-            var storiesToFetchList = ArrayList<Long>()
+            val storiesToFetchList = ArrayList<Long>()
             for (i in 0 until validatedCount) {
-                storiesToFetchList.add(topStoryIds[i + startIndex])
+                storiesToFetchList.add(storyIds[i + startIndex])
             }
 
             fetchItemsConcurrently(storiesToFetchList) { stories ->
@@ -91,16 +103,17 @@ class HNDataManager {
     }
 
     // Returns whether the fetch succeeded or not
-    private fun fetchTopStoryIds(): Boolean {
-        val url = String.format("%s/topstories.json", hnBaseUrl)
+    private fun fetchStoryIds(sortType: HNStorySortType): Boolean {
+        val url = String.format("%s/%s.json", hnBaseUrl, sortType.relativeUrl)
         val json = fetchJson(URL(url)) ?: return false
 
         val result = JSONArray(json)
-        topStoryIds = ArrayList()
+        val storyIds = ArrayList<Long>()
         for (i in 0 until result.length()) {
-            topStoryIds.add(result.getLong(i))
+            storyIds.add(result.getLong(i))
         }
 
+        storyListIds[sortType] = storyIds
         return true
     }
 
