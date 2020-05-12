@@ -41,24 +41,24 @@ data class HNItemModel(
             // Convert to seconds
             unitDescription = "seconds"
             value = TimeUnit.SECONDS.convert(value, TimeUnit.MILLISECONDS)
-        }
 
-        if (value > 60) {
-            // Convert to minutes
-            unitDescription = "minutes"
-            value = TimeUnit.MINUTES.convert(value, TimeUnit.SECONDS)
-        }
+            if (value > 60) {
+                // Convert to minutes
+                unitDescription = "minutes"
+                value = TimeUnit.MINUTES.convert(value, TimeUnit.SECONDS)
 
-        if (value > 60) {
-            // Convert to hours
-            unitDescription = "hours"
-            value = TimeUnit.HOURS.convert(value, TimeUnit.MINUTES)
-        }
+                if (value > 60) {
+                    // Convert to hours
+                    unitDescription = "hours"
+                    value = TimeUnit.HOURS.convert(value, TimeUnit.MINUTES)
 
-        if (value > 24) {
-            // Convert to days
-            unitDescription = "days"
-            value = TimeUnit.DAYS.convert(value, TimeUnit.HOURS)
+                    if (value > 24) {
+                        // Convert to days
+                        unitDescription = "days"
+                        value = TimeUnit.DAYS.convert(value, TimeUnit.HOURS)
+                    }
+                }
+            }
         }
 
         // TODO: localize
