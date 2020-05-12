@@ -81,6 +81,13 @@ class HNDataManager {
         fetchItemsConcurrently(item.children, onComplete)
     }
 
+    fun fetchItemDetailsAsync(itemId: Long, onComplete: (Boolean, HNItemModel?) -> Unit) {
+        GlobalScope.launch {
+            val item = fetchItemDetails(itemId)
+            onComplete(item != null, item)
+        }
+    }
+
     private fun fetchItemsConcurrently(itemIdList: List<Long>, onComplete: (List<HNItemModel>) -> Unit) {
         GlobalScope.launch {
             // Kick off all story detail tasks async in parallel

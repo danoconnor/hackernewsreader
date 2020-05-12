@@ -18,6 +18,12 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
     private var comment: HNItemModel? = null
     private var commentActionDelegate: WeakReference<CommentActionDelegate>? = null
 
+    init {
+        itemView.commentTextView.text = ""
+        itemView.authorTextView.text = ""
+        hideOptionsButtons()
+    }
+
     fun setComment(comment: HNItemModel, depth: Int, commentActionDelegate: CommentActionDelegate) {
         this.comment = comment
         this.commentActionDelegate = WeakReference(commentActionDelegate)

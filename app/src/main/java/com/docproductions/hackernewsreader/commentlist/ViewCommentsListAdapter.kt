@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.docproductions.hackernewsreader.ObjectGraph
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNDataManager
 import com.docproductions.hackernewsreader.data.HNItemModel
@@ -22,24 +24,20 @@ interface CommentActionDelegate {
 }
 
 class ViewCommentsListAdapter(private val context: Activity,
-                       private val story: HNItemModel): RecyclerView.Adapter<RecyclerView.ViewHolder>(), CommentActionDelegate {
+                               private val story: HNItemModel): RecyclerView.Adapter<RecyclerView.ViewHolder>(), CommentActionDelegate {
 
-   inner class CommentItem(val item: HNItemModel, val depth: Int, var isHidden: Boolean = false, var isCollapsed: Boolean = false) { }
+    inner class CommentItem(val itemId: Long, var item: HNItemModel?, val depth: Int, var isLoading: Boolean = false, var isHidden: Boolean = false, var isCollapsed: Boolean = false) { }
 
     private val storyViewType = 0
     private val commentViewType = 1
     private val collapsedCommentViewType = 2
 
-    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
     private var comments: MutableList<CommentItem> = ArrayList()
-    private val visibleComments get() = comments.filter { !it.isHidden && !it.item.deleted }
-
-    private val commentChangeMutex = Mutex()
+    private val visibleComments get() = comments.filter { !it.isHidden && !(it.item?.deleted ?: false) }
 
     init {
         context.commentsLoadingProgressBar.visibility = View.VISIBLE
-        fetchAllChildComments(story, 0, 3)
+        comments.addAll(story.children.map { childItemId -> CommentItem(childItemId, null, 0) })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -61,10 +59,38 @@ class ViewCommentsListAdapter(private val context: Activity,
         } else {
             // Subtract one since the story itself takes up the first position in the RecyclerView
             val comment = visibleComments[position - 1]
-            if (comment.isCollapsed) {
-                (holder as? CollapsedCommentViewHolder)?.setComment(comment.item, comment.depth, getChildComments(comments, comment.item.id).count(), this)
-            } else {
-                (holder as? CommentViewHolder)?.setComment(comment.item, comment.depth, this)
+
+            // We don't start loading comments until they are ready to be shown
+            // Start the loading process if we don't have the comment data yet and haven't started the fetch
+            if (comment.item == null && !comment.isLoading) {
+                comment.isLoading = true
+                ObjectGraph.hnDataManager.fetchItemDetailsAsync(comment.itemId) { success, loadedComment ->
+                    if (!success || loadedComment == null) {
+                        Log.e("ViewCommentsList", "Failed to fetch comment data for id ${comment.itemId}")
+                        return@fetchItemDetailsAsync
+                    }
+
+                    context.runOnUiThread {
+                        context.commentsLoadingProgressBar.visibility = View.GONE
+
+                        var loadedCommentIndex = comments.indexOfFirst { it.itemId == comment.itemId }
+                        comments[loadedCommentIndex].item = loadedComment
+                        comments[loadedCommentIndex].isLoading = false
+
+                        // TODO: Testing, remove
+                        Log.i("ViewCommentsList", "Loaded comment count: ${comments.count { it.item != null }}")
+
+                        // Add any children of the loaded comment right after it in the list
+                        comments.addAll(loadedCommentIndex + 1, loadedComment.children.map { childItemId -> CommentItem(childItemId, null, comment.depth + 1) })
+                        notifyDataSetChanged()
+                    }
+                }
+            } else if (comment.item != null) {
+                if (comment.isCollapsed) {
+                    (holder as? CollapsedCommentViewHolder)?.setComment(comment.item!!, comment.depth, getChildComments(comments, comment.itemId).count(), this)
+                } else {
+                    (holder as? CommentViewHolder)?.setComment(comment.item!!, comment.depth, this)
+                }
             }
         }
     }
@@ -90,37 +116,12 @@ class ViewCommentsListAdapter(private val context: Activity,
         modifyChildComments(comments, commentId, false)
     }
 
-    private fun fetchAllChildComments(item: HNItemModel, currentDepth: Int, maxDepth: Int) {
-        if (currentDepth > maxDepth) {
-            return
-        }
-
-        HNDataManager().fetchChildItemsAsync(item) {
-
-            // Add the children immediately after their parent
-            val commentItems = it.map { CommentItem(it, currentDepth) }
-            (context as? Activity)?.runOnUiThread {
-                // We update the comments list on the UI thread since all other interactions with the
-                // comments list run on the UI thread. This avoids concurrent modifications
-                val parentIndex = comments.indexOfFirst { it.item.id == item.id }
-                comments.addAll(parentIndex + 1, commentItems)
-                notifyDataSetChanged()
-
-                context.commentsLoadingProgressBar.visibility = View.GONE
-            }
-
-            for (child in it) {
-                fetchAllChildComments(child, currentDepth + 1, maxDepth)
-            }
-        }
-    }
-
     private fun getChildComments(commentList: List<CommentItem>, parentId: Long): List<CommentItem> {
         var foundParentComment = false
         var parentCommentDepth = -1
-        var childComments = ArrayList<CommentItem>()
+        val childComments = ArrayList<CommentItem>()
         for (comment in commentList) {
-            if (comment.item.id == parentId) {
+            if (comment.itemId == parentId) {
                 foundParentComment = true
                 parentCommentDepth = comment.depth
             } else if (foundParentComment) {
@@ -139,7 +140,7 @@ class ViewCommentsListAdapter(private val context: Activity,
         var isChildComment = false
         var targetCommentDepth = -1
         for (comment in commentList) {
-            if (comment.item.id == targetCommentId) {
+            if (comment.itemId == targetCommentId) {
                 isChildComment = true
                 targetCommentDepth = comment.depth
                 comment.isCollapsed = shouldCollapse
