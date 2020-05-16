@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".commentlist.ViewCommentsActivity">
 
-    <include layout="@layout/list_view" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/list_view" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/commentsLoadingProgressBar"
@@ -29,5 +31,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/noCommentsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_comments_label"
+        android:textAppearance="@style/SmallText"
+        android:textColor="@color/colorSecondaryTextColor"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

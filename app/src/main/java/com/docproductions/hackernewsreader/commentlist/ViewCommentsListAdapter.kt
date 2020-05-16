@@ -36,8 +36,14 @@ class ViewCommentsListAdapter(private val context: Activity,
     private val visibleComments get() = comments.filter { !it.isHidden && !(it.item?.deleted ?: false) }
 
     init {
-        context.commentsLoadingProgressBar.visibility = View.VISIBLE
-        comments.addAll(story.children.map { childItemId -> CommentItem(childItemId, null, 0) })
+        if (story.commentCount != null && story.commentCount > 0) {
+            context.noCommentsTextView.visibility = View.GONE
+            context.commentsLoadingProgressBar.visibility = View.VISIBLE
+            comments.addAll(story.children.map { childItemId -> CommentItem(childItemId, null, 0) })
+        } else {
+            context.noCommentsTextView.visibility = View.VISIBLE
+            context.commentsLoadingProgressBar.visibility = View.GONE
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

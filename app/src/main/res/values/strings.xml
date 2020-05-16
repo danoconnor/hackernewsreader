@@ -18,4 +18,5 @@
     <string name="ask_stories_label">Ask HN</string>
     <string name="show_stories_label">Show HN</string>
     <string name="jobs_stories_label">Jobs</string>
+    <string name="no_comments_label">No comments</string>
 </resources>
