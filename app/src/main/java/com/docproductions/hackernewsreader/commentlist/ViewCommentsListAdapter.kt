@@ -37,11 +37,9 @@ class ViewCommentsListAdapter(private val context: Activity,
 
     init {
         if (story.commentCount != null && story.commentCount > 0) {
-            context.noCommentsTextView.visibility = View.GONE
             context.commentsLoadingProgressBar.visibility = View.VISIBLE
             comments.addAll(story.children.map { childItemId -> CommentItem(childItemId, null, 0) })
         } else {
-            context.noCommentsTextView.visibility = View.VISIBLE
             context.commentsLoadingProgressBar.visibility = View.GONE
         }
     }

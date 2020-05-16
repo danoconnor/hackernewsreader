@@ -36,6 +36,12 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
             itemView.linkTextView.text = storyTextParsed.trim()
         }
 
+        itemView.linkTextView.visibility = if (itemView.linkTextView.text.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+
         story = item
         setOnClickListeners(isStoryDetailsMode)
     }

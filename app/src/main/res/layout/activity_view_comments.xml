@@ -32,14 +32,4 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/noCommentsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_comments_label"
-        android:textAppearance="@style/SmallText"
-        android:textColor="@color/colorSecondaryTextColor"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="center" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
