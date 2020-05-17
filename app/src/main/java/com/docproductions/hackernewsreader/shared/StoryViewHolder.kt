@@ -5,11 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.text.Html
+import android.text.util.Linkify
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.docproductions.hackernewsreader.Constants
 import com.docproductions.hackernewsreader.commentlist.ViewCommentsActivity
 import com.docproductions.hackernewsreader.data.HNItemModel
+import com.docproductions.hackernewsreader.data.HNItemType
 import kotlinx.android.synthetic.main.story_item_view.view.*
 import kotlinx.serialization.json.Json
 
@@ -34,12 +37,24 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
             }
 
             itemView.linkTextView.text = storyTextParsed.trim()
+            itemView.linkTextView.autoLinkMask = Linkify.WEB_URLS
+            itemView.linkTextView.linksClickable = true
+        } else {
+            itemView.linkTextView.autoLinkMask = 0
+            itemView.linkTextView.linksClickable = false
         }
 
         itemView.linkTextView.visibility = if (itemView.linkTextView.text.isNullOrEmpty()) {
             View.GONE
         } else {
             View.VISIBLE
+        }
+
+        if (item.type == HNItemType.job) {
+            // Jobs posts don't have score or comments
+            itemView.scoreCommentCountContainer.visibility = View.GONE
+        } else {
+            itemView.scoreCommentCountContainer.visibility = View.VISIBLE
         }
 
         story = item

@@ -1,12 +1,10 @@
 package com.docproductions.hackernewsreader.commentlist
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.text.Html
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.graphics.toColor
 import androidx.recyclerview.widget.RecyclerView
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
@@ -45,7 +43,7 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
         itemView.commentTextView.text = commentTextParsed.trim()
         itemView.authorTextView.text = String.format("%s, %s", comment.author, comment.getTimeSincePosted())
 
-        val commentDepthIndent = context.resources.getDimension(R.dimen.comment_margin).toInt()
+        val commentDepthIndent = context.resources.getDimension(R.dimen.standard_margin).toInt()
 
         val commentTextViewLayoutParams = itemView.commentTextView.layoutParams as ConstraintLayout.LayoutParams
         commentTextViewLayoutParams.marginStart = commentDepthIndent * (depth + 1)
@@ -87,7 +85,7 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
 
     private fun hideOptionsButtons() {
         val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
-        authorTextViewLayoutParams.topMargin = context.resources.getDimension(R.dimen.comment_margin).toInt()
+        authorTextViewLayoutParams.topMargin = context.resources.getDimension(R.dimen.standard_margin).toInt()
         itemView.authorTextView.layoutParams = authorTextViewLayoutParams
 
         itemView.optionsButtonContainer.visibility = View.GONE

@@ -29,8 +29,9 @@ class ViewCommentsListAdapter(private val context: Activity,
     inner class CommentItem(val itemId: Long, var item: HNItemModel?, val depth: Int, var isLoading: Boolean = false, var isHidden: Boolean = false, var isCollapsed: Boolean = false) { }
 
     private val storyViewType = 0
-    private val commentViewType = 1
-    private val collapsedCommentViewType = 2
+    private val jobViewType = 1
+    private val commentViewType = 2
+    private val collapsedCommentViewType = 3
 
     private var comments: MutableList<CommentItem> = ArrayList()
     private val visibleComments get() = comments.filter { !it.isHidden && !(it.item?.deleted ?: false) }

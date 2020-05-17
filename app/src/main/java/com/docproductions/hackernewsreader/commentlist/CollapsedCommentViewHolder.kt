@@ -26,7 +26,7 @@ class CollapsedCommentViewHolder(private val context: Context, commentView: View
         if (numberOfChildComments > 0) collapsedText = String.format("%s (%d)", collapsedText, numberOfChildComments)
         itemView.collapsedCommentTextView.text = collapsedText
 
-        val commentDepthIndent = context.resources.getDimension(R.dimen.comment_margin).toInt()
+        val commentDepthIndent = context.resources.getDimension(R.dimen.standard_margin).toInt()
 
         val layoutParams = itemView.collapsedCommentTextView.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.marginStart = commentDepthIndent * (depth + 1)
