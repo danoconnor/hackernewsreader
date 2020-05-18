@@ -74,20 +74,11 @@ class CommentViewHolder(private val context: Context, commentView: View) : Recyc
     }
 
     private fun showOptionsButtons() {
-        val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
-        authorTextViewLayoutParams.topMargin = 0
-        itemView.authorTextView.layoutParams = authorTextViewLayoutParams
-
         itemView.optionsButtonContainer.visibility = View.VISIBLE
-
         itemView.commentItemLayout.setBackgroundColor(context.resources.getColor(R.color.colorSelectedHighlight))
     }
 
     private fun hideOptionsButtons() {
-        val authorTextViewLayoutParams = itemView.authorTextView.layoutParams as ConstraintLayout.LayoutParams
-        authorTextViewLayoutParams.topMargin = context.resources.getDimension(R.dimen.standard_margin).toInt()
-        itemView.authorTextView.layoutParams = authorTextViewLayoutParams
-
         itemView.optionsButtonContainer.visibility = View.GONE
         itemView.commentItemLayout.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
     }

@@ -11,6 +11,7 @@ import com.docproductions.hackernewsreader.ObjectGraph
 import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.data.HNItemModel
 import com.docproductions.hackernewsreader.data.HNStorySortType
+import com.docproductions.hackernewsreader.shared.VerticalSpaceItemDecoration
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 import kotlinx.android.synthetic.main.activity_story_list.*
@@ -28,6 +29,7 @@ class StoryListActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         listView.layoutManager = layoutManager
+        listView.addItemDecoration(VerticalSpaceItemDecoration(resources.getDimension(R.dimen.small_margin).toInt()))
         listView.adapter =
             StoryListAdapter(this)
     }

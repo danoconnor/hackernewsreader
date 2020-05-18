@@ -77,10 +77,9 @@
         android:id="@+id/collapsedCommentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="danocon, 16 hrs"
         android:textAppearance="@style/SmallText"
-        android:textColor="@color/colorPrimaryTextColor"
+        android:textColor="@color/colorSecondaryTextColor"
         app:layout_constraintStart_toStartOf="@+id/itemTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/itemTitleTextView" />
 
@@ -88,7 +87,6 @@
         android:id="@+id/linkTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="https://github.com/somethingcool"
         android:textAppearance="@style/SmallText"
         android:textColor="@color/colorSecondaryTextColor"

@@ -10,10 +10,13 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.docproductions.hackernewsreader.Constants
+import com.docproductions.hackernewsreader.R
 import com.docproductions.hackernewsreader.commentlist.ViewCommentsActivity
 import com.docproductions.hackernewsreader.data.HNItemModel
 import com.docproductions.hackernewsreader.data.HNItemType
+import kotlinx.android.synthetic.main.comment_item_view.view.*
 import kotlinx.android.synthetic.main.story_item_view.view.*
+import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 
 class StoryViewHolder(private val context: Context, storyView: View) : RecyclerView.ViewHolder(storyView) {
@@ -45,22 +48,23 @@ class StoryViewHolder(private val context: Context, storyView: View) : RecyclerV
         }
 
         itemView.linkTextView.visibility = if (itemView.linkTextView.text.isNullOrEmpty()) {
-            View.GONE
+             View.GONE
         } else {
             View.VISIBLE
         }
 
-        if (item.type == HNItemType.job) {
+        itemView.scoreCommentCountContainer.visibility = if (item.type == HNItemType.job) {
             // Jobs posts don't have score or comments
-            itemView.scoreCommentCountContainer.visibility = View.GONE
+            View.GONE
         } else {
-            itemView.scoreCommentCountContainer.visibility = View.VISIBLE
+            View.VISIBLE
         }
 
         story = item
         setOnClickListeners(isStoryDetailsMode)
     }
 
+    @OptIn(UnstableDefault::class)
     private fun setOnClickListeners(isStoryDetailsMode: Boolean) {
         itemView.linkTextView.setOnClickListener {
             story?.url?.let {

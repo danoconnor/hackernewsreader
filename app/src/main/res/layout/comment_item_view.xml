@@ -47,7 +47,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="danocon, 12 hours ago"
         android:textAppearance="@style/SmallText"
@@ -59,13 +58,11 @@
 
     <TextView
         android:id="@+id/commentTextView"
-        android:autoLink="web"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:autoLink="web"
         android:text="Wow this person said something so interesting and funny and relevant here."
         android:textAppearance="@style/SmallText"
         app:layout_constraintBottom_toBottomOf="parent"

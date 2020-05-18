@@ -4,7 +4,7 @@
     <color name="colorSelectedHighlight">#88444466</color>
     <color name="colorAccent">#777777</color>
     <color name="colorPrimaryTextColor">#FFFFFF</color>
-    <color name="colorSecondaryTextColor">#C7C7C7</color>
+    <color name="colorSecondaryTextColor">#AAAAAA</color>
     <color name="colorButtonPrimaryTextColor">#000000</color>
     <color name="colorButtonDisabledTextColor">#555555</color>
 </resources>
